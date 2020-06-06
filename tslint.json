@@ -1,0 +1,16 @@
+{
+    "extends": [
+        "./../../tslint.json"
+    ],
+    "rules": {
+        "file-header": [
+            true,
+            {
+                "match": "Source https://github.com/spielhalle/spielhalle Package: @spielhalle/sudoku-pixijs",
+                "allow-single-line-comments": true,
+                "default": "Source https://github.com/spielhalle/spielhalle Package: @spielhalle/sudoku-pixijs",
+                "enforce-trailing-newline": false
+            }
+        ]
+    }
+}

@@ -1,0 +1,38 @@
+name: Test
+on: [push,pull_request]
+
+jobs:
+  test_suite:
+    runs-on: ubuntu-latest
+    name: Test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      - name: Setup Cache
+        uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install Deps
+        run: |
+          npm ci
+          npx lerna bootstrap --ci
+      - name: Run Build
+        run: npm run build
+      - name: Run Test
+        run: npm run test:coverage --no-sort
+      - name: Upload coverage to Codecov
+        run: |
+          node .github/coveralls.js
+        env:
+          COVERALLS_REPO_TOKEN : ${{ secrets.GITHUB_TOKEN }}
+      - name: Run Lint
+        run: npm run lint --no-sort
+      - name: Run Docs
+        run: npm run docs --no-sort

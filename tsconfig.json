@@ -2,19 +2,17 @@
     "compilerOptions": {
         "outDir": "./dist",
         "rootDir": "./src",
-        "target": "es6",
-        "module": "es6",
+        "target": "esnext",
+        "module": "esnext",
         "lib": [
-            "es6",
+            "esnext",
             "dom"
         ],
         "sourceMap": true,
-        "declaration": true,
+        "declaration": false,
         "moduleResolution": "node",
         "strictNullChecks": true,
         "noUnusedLocals": true,
-        // Disallow features that require cross-file information for emit.
-        "isolatedModules": true,
         // Import non-ES modules as default imports.
         "esModuleInterop": true
     },

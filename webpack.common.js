@@ -1,11 +1,11 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-
+const CopyPlugin = require('copy-webpack-plugin');
 module.exports = {
     mode: 'development',
     entry: {
-        'game.js': './src/game.ts',
+        'index': './src/index.ts',
         //'style.css': './src/index.css',
     },
     devtool: 'source-map',
@@ -26,13 +26,14 @@ module.exports = {
                     {
                         loader: "file-loader",
                         options: {
-                            name: "[name].[ext]",
+                            name: "[name].[contenthash].[ext]",
                         },
                     },
                     "extract-loader",
                     {
                         loader: "css-loader",
                         options: {
+                            import: true,
                             sourceMap: true
                         }
                     }
@@ -45,6 +46,14 @@ module.exports = {
             {
                 test: /\.jpg$/,
                 use: "file-loader"
+            },
+            {
+                test: /\.(jpe?g|png)$/i,
+                loader: 'responsive-loader',
+                options: {
+                    adapter: require('responsive-loader/sharp'),
+                    outputPath: './assets/imgs'
+                }
             }
         ],
     },
@@ -57,10 +66,17 @@ module.exports = {
         new HtmlWebpackPlugin({
             title: 'Development',
             template: './src/index.html',
+            filename: 'index.html'
+        }),
+        new CopyPlugin({
+            patterns: [
+                { from: 'src/assets/static', to: 'assets/static' },
+            ]
         }),
     ],
     output: {
-        filename: '[hash].[name]',
+        //filename: '[hash].[name]',
+        filename: '[name].[contenthash].js',
         path: path.resolve(__dirname, 'dist'),
     },
     optimization: {
@@ -69,14 +85,15 @@ module.exports = {
         minimize: true,
         moduleIds: 'hashed',
         runtimeChunk: {
-            name: 'runtime.js'
+            name: 'runtime'
         },
         splitChunks: {
             cacheGroups: {
                 commons: {
+                    //test: /[\\/]node_modules[\\/](?!phaser[\\/])/,
                     test: /[\\/]node_modules[\\/]/,
-                    filename: '[hash].vendor.js',
-                    chunks: 'all'
+                    name: 'vendor',
+                    chunks: 'initial'
                 }
             }
         }
